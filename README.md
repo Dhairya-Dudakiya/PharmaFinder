@@ -1,16 +1,37 @@
-# pharmafinder
+# 💊 PharmaFinder
 
-A new Flutter project.
+**PharmaFinder** is a Flutter-based mobile application that helps users locate nearby medical stores and search for medicines. It also includes an admin panel (PharmaFinderAdmin) for medical shop owners to manage their store inventory and process user orders.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📱 Features
 
-A few resources to get you started if this is your first Flutter project:
+### 👤 User App (PharmaFinder)
+- 🔍 Search for medicines by name or category
+- 📍 Locate nearby medical stores based on location
+- 🛒 View medicine details and add to cart
+- 📦 Place orders directly from the app
+- 🧭 Interactive map for medical store locations
+- 🧾 Filter medicines by categories
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 🧑‍💼 Admin App (PharmaFinderAdmin)
+- 🏪 Register medical stores
+- 📦 Add, edit, and delete medicines from inventory
+- 📃 View and manage user orders
+- 📊 Dashboard with store insights and inventory data
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** Flutter
+- **Backend:** Firebase Realtime Database & Firestore
+- **Authentication:** Firebase Auth
+- **Storage:** Firebase Cloud Storage
+- **Location:** Geolocation APIs
+- **State Management:** setState (initial), Riverpod/GetX (optional for future)
+
+---
+
+## 📂 Project Structure
+
