@@ -30,8 +30,3 @@
 - **Storage:** Firebase Cloud Storage
 - **Location:** Geolocation APIs
 - **State Management:** setState (initial), Riverpod/GetX (optional for future)
-
----
-
-## 📂 Project Structure
-
