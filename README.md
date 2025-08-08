@@ -30,3 +30,24 @@
 - **Storage:** Firebase Cloud Storage
 - **Location:** Geolocation APIs
 - **State Management:** setState (initial), Riverpod/GetX (optional for future)
+  
+---
+
+## 🧠 Future Enhancements
+
+- 🔔 Push notifications for order updates
+- 📸 Prescription upload feature
+- 🌐 Multi-language support
+- 💳 In-app payment integration
+
+---
+
+## 🙋‍♂️ Author
+
+Made with 💙 by **Dhairya Dudakiya**
+
+- [GitHub](https://github.com/Dhairya-Dudakiya)
+- [LinkedIn](https://www.linkedin.com/in/dhairya-dudakiya)
+- [Email](mailto:your-email@example.com)
+
+
