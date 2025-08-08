@@ -48,6 +48,6 @@ Made with 💙 by **Dhairya Dudakiya**
 
 - [GitHub](https://github.com/Dhairya-Dudakiya)
 - [LinkedIn](https://www.linkedin.com/in/dhairya-dudakiya)
-- [Email](mailto:your-email@example.com)
+- [Email](mailto:dhairyadudakiya52056@gmail.com)
 
 
