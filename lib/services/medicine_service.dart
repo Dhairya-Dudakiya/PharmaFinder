@@ -2,25 +2,40 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:pharmafinder/models/medicine_model.dart';
 
 class MedicineService {
-  final _dbRef = FirebaseDatabase.instance.ref('medicines');
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref('medicines');
 
+  // ✅ Fetch all medicines (from all admins/stores)
   Future<List<Medicine>> fetchMedicines() async {
     final snapshot = await _dbRef.get();
+    final List<Medicine> allMedicines = [];
 
     if (snapshot.exists && snapshot.value != null) {
-      final List<dynamic> rawList = snapshot.value as List;
+      final data = snapshot.value as Map;
 
-      return rawList
-          .where(
-            (item) => item != null,
-          ) // Filter out nulls (e.g., from deleted indices)
-          .map((item) => Medicine.fromJson(Map<String, dynamic>.from(item)))
-          .toList();
-    } else {
-      return [];
+      data.forEach((adminId, stores) {
+        if (stores is Map) {
+          stores.forEach((storeName, medicinesMap) {
+            if (medicinesMap is Map) {
+              medicinesMap.forEach((id, medData) {
+                try {
+                  final medicine = Medicine.fromJson(
+                    Map<String, dynamic>.from(medData),
+                  ).copyWith(id: id);
+                  allMedicines.add(medicine);
+                } catch (e) {
+                  print("Error parsing medicine: $e");
+                }
+              });
+            }
+          });
+        }
+      });
     }
+
+    return allMedicines;
   }
 
+  // ✅ Fetch medicines by category
   Future<List<Medicine>> fetchMedicinesByCategory(String category) async {
     final all = await fetchMedicines();
 

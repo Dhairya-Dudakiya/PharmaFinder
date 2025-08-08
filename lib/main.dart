@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmafinder/firebase_options.dart';
-import 'package:pharmafinder/screens/auth_screens/auth_wrapper.dart';
 import 'package:pharmafinder/screens/splash_screen.dart';
 
 void main() async {
