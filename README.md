@@ -50,4 +50,19 @@ Made with 💙 by **Dhairya Dudakiya**
 - [LinkedIn](https://www.linkedin.com/in/dhairya-dudakiya)
 - [Email](mailto:dhairyadudakiya52056@gmail.com)
 
+---
+
+## 📸 Screenshots
+
+| Splash | Home | Categories |
+|--------|------|------------|
+| ![Splash](lib/screenshots/Splash_Screen.jpg) | ![Home](lib/screenshots/Home_Screen.jpg) | ![Categorized](lib/screenshots/Home_Screen_Categorized.jpg) |
+
+| Medicine Details | Cart | Checkout |
+|------------------|------|----------|
+| ![Description](lib/screenshots/Medicine_Description_Screen.jpg) | ![Cart](lib/screenshots/Cart_Screen.jpg) | ![Checkout](lib/screenshots/Checkout_Screen.jpg) |
+
+| Cart After Checkout | Profile | Settings |
+|---------------------|---------|----------|
+| ![After Checkout](lib/screenshots/Cart_after_checkout.jpg) | ![Profile](lib/screenshots/Profile_Screen.jpg) | ![Settings](lib/screenshots/Settings_Screen.jpg) |
 
