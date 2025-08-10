@@ -10,6 +10,8 @@ class Medicine {
   final String manufacturer;
   final bool requiresPrescription;
   final String icon;
+  final String? storeId; // Store reference
+  final String? storeName; // Optional for quick display
 
   Medicine({
     required this.id,
@@ -21,28 +23,29 @@ class Medicine {
     required this.manufacturer,
     required this.requiresPrescription,
     required this.icon,
+    this.storeId,
+    this.storeName,
   });
 
-  // ✅ From JSON (e.g., for decoding from cart or API)
-  factory Medicine.fromJson(Map<String, dynamic> json) {
+  /// From JSON (Realtime DB or API)
+  factory Medicine.fromJson(Map<String, dynamic> json, {String? storeName}) {
     return Medicine(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
-      price: (json['price'] is int)
-          ? (json['price'] as int).toDouble()
-          : (json['price'] is double)
-          ? json['price']
-          : double.tryParse(json['price']?.toString() ?? '') ?? 0.0,
+      price: _parsePrice(json['price']),
       dosage: json['dosage']?.toString() ?? '',
       manufacturer: json['manufacturer']?.toString() ?? '',
-      requiresPrescription: json['requiresPrescription'] == true,
+      requiresPrescription: _parseBool(json['requiresPrescription']),
       icon: json['icon']?.toString() ?? 'medication',
+      storeId: json['storeId']?.toString(),
+      storeName:
+          storeName ?? json['storeName']?.toString(), // ✅ Prefer parent key
     );
   }
 
-  // ✅ From Firestore document
+  /// From Firestore
   factory Medicine.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Medicine(
@@ -50,22 +53,20 @@ class Medicine {
       name: data['name']?.toString() ?? '',
       description: data['description']?.toString() ?? '',
       category: data['category']?.toString() ?? '',
-      price: (data['price'] is int)
-          ? (data['price'] as int).toDouble()
-          : (data['price'] is double)
-          ? data['price']
-          : double.tryParse(data['price']?.toString() ?? '') ?? 0.0,
+      price: _parsePrice(data['price']),
       dosage: data['dosage']?.toString() ?? '',
       manufacturer: data['manufacturer']?.toString() ?? '',
-      requiresPrescription: data['requiresPrescription'] == true,
+      requiresPrescription: _parseBool(data['requiresPrescription']),
       icon: data['icon']?.toString() ?? 'medication',
+      storeId: data['storeId']?.toString(),
+      storeName: data['storeName']?.toString(),
     );
   }
 
-  // ✅ To JSON (for storing in Firestore or cart)
+  /// To JSON
   Map<String, dynamic> toJson() {
     return {
-      // DO NOT include 'id' unless absolutely needed for offline use
+      'id': id,
       'name': name,
       'description': description,
       'category': category,
@@ -74,6 +75,8 @@ class Medicine {
       'manufacturer': manufacturer,
       'requiresPrescription': requiresPrescription,
       'icon': icon,
+      if (storeId != null) 'storeId': storeId,
+      if (storeName != null) 'storeName': storeName,
     };
   }
 
@@ -87,6 +90,8 @@ class Medicine {
     String? manufacturer,
     bool? requiresPrescription,
     String? icon,
+    String? storeId,
+    String? storeName,
   }) {
     return Medicine(
       id: id ?? this.id,
@@ -98,6 +103,26 @@ class Medicine {
       manufacturer: manufacturer ?? this.manufacturer,
       requiresPrescription: requiresPrescription ?? this.requiresPrescription,
       icon: icon ?? this.icon,
+      storeId: storeId ?? this.storeId,
+      storeName: storeName ?? this.storeName,
     );
+  }
+
+  /// Helper to safely parse price
+  static double _parsePrice(dynamic value) {
+    if (value is int) return value.toDouble();
+    if (value is double) return value;
+    return double.tryParse(value?.toString() ?? '') ?? 0.0;
+  }
+
+  /// Helper to parse bool from various formats
+  static bool _parseBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) {
+      final lower = value.toLowerCase();
+      return lower == 'true' || lower == '1' || lower == 'yes';
+    }
+    return false;
   }
 }

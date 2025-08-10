@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final MedicineService _medicineService = MedicineService();
 
   late TabController _tabController;
-  late Future<List<Medicine>> _allMedicines;
   String _selectedLocation = "Current Location";
 
   final List<String> _categories = [
@@ -47,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: _categories.length, vsync: this);
-    _allMedicines = _medicineService.fetchMedicinesByCategory('All');
   }
 
   @override
@@ -75,7 +73,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
           body: TabBarView(
             controller: _tabController,
-            children: _categories.map(_buildMedicineGrid).toList(),
+            children: _categories.map((category) {
+              return _buildMedicineGrid(category);
+            }).toList(),
           ),
         ),
       ),
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildMedicineGrid(String category) {
     return FutureBuilder<List<Medicine>>(
-      future: _allMedicines,
+      future: _medicineService.fetchMedicinesByCategory(category),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -176,23 +176,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
-
-        List<Medicine> filtered = category == 'All'
-            ? snapshot.data!
-            : snapshot.data!
-                  .where(
-                    (med) =>
-                        med.category.toLowerCase() == category.toLowerCase(),
-                  )
-                  .toList();
-
-        if (filtered.isEmpty) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No medicines found.'));
         }
 
+        final medicines = snapshot.data!;
+
         return GridView.builder(
           padding: const EdgeInsets.all(16),
-          itemCount: filtered.length,
+          itemCount: medicines.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.75,
@@ -200,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisSpacing: 16,
           ),
           itemBuilder: (context, index) {
-            final medicine = filtered[index];
+            final medicine = medicines[index];
             return MedicineCard(
               medicine: medicine,
               onTap: () {

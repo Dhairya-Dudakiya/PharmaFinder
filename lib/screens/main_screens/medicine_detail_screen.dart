@@ -16,6 +16,62 @@ class MedicineDetailScreen extends StatefulWidget {
 
 class _MedicineDetailScreenState extends State<MedicineDetailScreen> {
   int _quantity = 1;
+  Map<String, dynamic>? _storeData;
+  bool _loadingStore = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchStoreDetails();
+  }
+
+  Future<void> _fetchStoreDetails() async {
+    try {
+      // If your Medicine model has storeId, use it directly
+      if (widget.medicine.storeId != null &&
+          widget.medicine.storeId!.isNotEmpty) {
+        final storeDoc = await FirebaseFirestore.instance
+            .collection('pharmacies')
+            .doc(widget.medicine.storeId)
+            .get();
+
+        if (storeDoc.exists) {
+          setState(() {
+            _storeData = storeDoc.data();
+            _loadingStore = false;
+          });
+          return;
+        }
+      }
+
+      // If no storeId, try storeName
+      if (widget.medicine.storeName != null &&
+          widget.medicine.storeName!.isNotEmpty) {
+        final querySnapshot = await FirebaseFirestore.instance
+            .collection('pharmacies')
+            .where('storeName', isEqualTo: widget.medicine.storeName)
+            .limit(1)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          setState(() {
+            _storeData = querySnapshot.docs.first.data();
+            _loadingStore = false;
+          });
+          return;
+        }
+      }
+
+      // If store not found
+      setState(() {
+        _storeData = null;
+        _loadingStore = false;
+      });
+    } catch (e) {
+      print("Error fetching store details: $e");
+      setState(() => _loadingStore = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +119,7 @@ class _MedicineDetailScreenState extends State<MedicineDetailScreen> {
               ),
             ),
             const SizedBox(height: 20),
+
             _buildInfoCard("Dosage", medicine.dosage),
             _buildInfoCard("Manufacturer", medicine.manufacturer),
             _buildInfoCard("Category", medicine.category),
@@ -71,6 +128,31 @@ class _MedicineDetailScreenState extends State<MedicineDetailScreen> {
               "Prescription",
               medicine.requiresPrescription ? 'Required' : 'Not Required',
             ),
+
+            // Store Info
+            const SizedBox(height: 10),
+            _loadingStore
+                ? const Center(child: CircularProgressIndicator())
+                : _storeData != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInfoCard(
+                        "Store Name",
+                        _storeData!['storeName'] ?? "Unknown",
+                      ),
+                      _buildInfoCard(
+                        "Address",
+                        _storeData!['address'] ?? "N/A",
+                      ),
+                      _buildInfoCard("Contact", _storeData!['phone'] ?? "N/A"),
+                    ],
+                  )
+                : const Text(
+                    "Store information not available",
+                    style: TextStyle(color: Colors.red, fontFamily: 'Poppins'),
+                  ),
+
             const SizedBox(height: 20),
             const Text(
               "Description",
@@ -91,7 +173,7 @@ class _MedicineDetailScreenState extends State<MedicineDetailScreen> {
             ),
             const SizedBox(height: 30),
 
-            // Quantity selector
+            // Quantity Selector
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -155,6 +237,8 @@ class _MedicineDetailScreenState extends State<MedicineDetailScreen> {
                       'description': medicine.description,
                       'icon': medicine.icon,
                       'requiresPrescription': medicine.requiresPrescription,
+                      'storeId': medicine.storeId,
+                      'storeName': medicine.storeName,
                       'addedAt': FieldValue.serverTimestamp(),
                     });
 
