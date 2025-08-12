@@ -44,7 +44,7 @@
 
 ## 🙋‍♂️ Author
 
-Made By 💙 by **Dhairya Dudakiya**
+Made With 💙 by **Dhairya Dudakiya**
 
 - [GitHub](https://github.com/Dhairya-Dudakiya)
 - [LinkedIn](https://www.linkedin.com/in/dhairya-dudakiya)
